@@ -64,6 +64,7 @@ class Login(View):
 def Logout(request):
     try:
         del request.session['user_id']
+        request.session.clear_expired()
     except KeyError:
         pass
     return HttpResponse("You're logged out.")
