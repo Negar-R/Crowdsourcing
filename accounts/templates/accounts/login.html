@@ -8,11 +8,11 @@
 
 {% block body %}
     <body class="hold-transition login-page">
-<div class="login-box">
-    <div class="login-logo">
-        <a href="#"><b>CrowdSourcing</b></a>
-    </div>
-    <!-- /.login-logo -->
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="#"><b>CrowdSourcing</b></a>
+        </div>
+        <!-- /.login-logo -->
     <div class="login-box-body">
         <p class="login-box-msg">Sign in </p>
 
@@ -39,6 +39,9 @@
                 </div>
                 <!-- /.col -->
             </div>
+            {% if err_msg %}
+                <p class="pull-center" style="color:red;">{{ err_msg }}</p>
+            {% endif %}
         </form>
     </div>
     <!-- /.login-box-body -->

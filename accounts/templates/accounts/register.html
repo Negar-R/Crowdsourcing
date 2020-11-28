@@ -36,6 +36,9 @@
                 </div>
                 <!-- /.col -->
             </div>
+            {% if err_msg %}
+                <p class="pull-center" style="color:red;">{{ err_msg }}</p>
+            {% endif %}
         </form>
     </div>
     <!-- /.login-box-body -->

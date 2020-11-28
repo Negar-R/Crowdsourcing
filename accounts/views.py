@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from django.views.generic import View
 from django.http import HttpResponse
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
@@ -23,57 +23,71 @@ class Registeration(View):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        print("Get Posted data !!! ")
         user, created = User.objects.get_or_create(username=username,
                                                    email=email)
-        print("user careated !!! ")
         if not created:
-            return HttpResponse("There is one user with this username, \
-                                please use another one")
-        user.set_password(password)
-        user.save()
+            err_msg = "There is one user with this username, \
+                       please select another one"
+            context = {
+                'err_msg': err_msg
+            }
+            return render(request, 'accounts/register.html', context=context)
+        else:
+            user.set_password(password)
+            user.save()
 
-        profile, created = UserProfile.objects.get_or_create(user=user)
-        sendingEmail(request, email, str(profile.verification_uuid))
+            profile, created = UserProfile.objects.get_or_create(user=user)
+            sendingEmail(request, email, str(profile.verification_uuid))
 
-        return HttpResponse("Your verification code was sent for you")
+            data = "Verification code was sent for your email. \
+                    Please confirm it"
+            context = {
+                'data': data
+            }
+            return render(request, 'show_message.html', context=context)
 
 
 class Login(View):
     name = 'login'
 
     def get(self, request):
-        if not request.user.is_authenticated:
-            return render(request, 'accounts/login.html')
-        else:
-            return HttpResponse("salam")
+        return render(request, 'accounts/login.html')
 
     def post(self, request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        user = authenticate(username=username, password=password)
+        user = authenticate(request, username=username, password=password)
         if user is not None:
-            request.session['user_id'] = user.id
-            request.session.set_expiry(300)
-            return HttpResponse("You are logged in")
+            if user.userprofile.is_verified:
+                login(request, user)
+                return redirect('all_task')
+            else:
+                err_msg = "You should verify your account first"
+                context = {
+                    'err_msg': err_msg
+                }
+                return render(request, 'accounts/login.html', context=context)
         else:
-            return HttpResponse("You should be registered first")
-
+            err_msg = "You should register first"
+            context = {
+                'err_msg': err_msg
+            }
+            return render(request, 'accounts/login.html', context=context)
+        
 
 def Logout(request):
-    try:
-        del request.session['user_id']
-        request.session.clear_expired()
-    except KeyError:
-        pass
-    return HttpResponse("You're logged out.")
+    if request.user.is_authenticated:
+        logout(request)
+        return redirect('all_task')
+    else:
+        return redirect('login')
 
 
 #TODO:make a url correct by defining a setting variable
 def sendingEmail(request, user_email, user_uuid):
     subject = 'Verify your CROWD SOURCING account'
-    message = 'Follow this link to verify your account' 
+    message = 'Follow this link to verify your account'
     reverse_generated_link = reverse('verify', kwargs={'uuid': user_uuid})
     link = f"{PROJECT_IP_ADDRESS}{reverse_generated_link}"
     send_message = f"{message}:\t{link}"
@@ -85,14 +99,19 @@ def sendingEmail(request, user_email, user_uuid):
         return render(request, 'accounts/register.html')
 
 
-#TODO: redirect to login page
 def verify(request, uuid):
     try:
-        user_profile = UserProfile.objects.get(verification_uuid=uuid,
-                                               is_verified=False)
+        user_profile = UserProfile.objects.get(verification_uuid=uuid)
+        if user_profile.is_verified:
+            return redirect('all_task')
+        else:
+            user_profile.is_verified = True
+            user_profile.save()
+            return render(request, 'accounts/login.html')
+
     except UserProfile.DoesNotExist:
-        return HttpResponse("User does not exist or is already verified")
-    user_profile.is_verified = True
-    user_profile.save()
-    # return redirect(request, 'accounts/login.html')
-    return HttpResponse("Your accounts was verified, now you can login")
+        data = "There is no user with this verification code."
+        context = {
+                'data': data
+            }
+        return render(request, 'show_message.html', context=context)
