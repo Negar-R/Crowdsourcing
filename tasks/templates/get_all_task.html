@@ -1,0 +1,157 @@
+{% extends "task_base.html" %}
+{% load static %}
+{% comment %} {% load timestamp_tag %} {% endcomment %}
+
+{% block title %}
+<head>
+    <link rel="stylesheet"
+          href="{% static '/bower_components/bootstrap-daterangepicker/daterangepicker.css' %}">
+    <style>
+        li.my_li {
+            cursor: pointer;
+        }
+    </style>
+</head>
+{% endblock %}
+{% block content %}
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+            Task
+        </h1>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <section class="col-lg-12 col-md-12">
+                <div class="box box-info">
+
+                    {% comment %} /////// {% endcomment %}
+
+                <div class="box box-info">
+                    <div class="box-header">
+                        <i class="fa fa-info-circle"></i>
+                        <h3 class="box-title">Task Table </h3>
+                        <!-- /. tools -->
+                    </div>
+
+                    <table id="my_table" class="table table-hover">
+                        <tr>
+                            <th>Title</th>
+                            <th>Value</th>
+                            <th>Estimation</th>
+                            <th>Deadline</th>
+                            <th>Report</th>
+                            <th>Assignee</th>
+                            <th>Description</th>
+                            <th>Details</th>
+                            {% comment %} <th>column value</th>
+                            <th>status</th>
+                            <th>delete</th>
+                            <th>download</th> {% endcomment %}
+                        </tr>
+                        {% if tasks %}
+                        {% for task in tasks %}
+                        <tr>
+                            <td>{{task.title}}</td>
+                            <td>{{task.value}}</td>
+                            <td>{{task.estimation}}</td>
+                            <td>{{task.deadline}}</td>
+                            <td>{{task.reporter.username}}</td>
+                            <td>{{task.assignee.username}}</td>
+                            {% if task.description %}
+                                <td>
+                                    <button type="button" class="description" onclick='toggleDescription("{{task.description}}")'>Description</button>
+                                </td>
+                            {% endif %}
+                            {% if request.user %}
+                                {% if task.assignee %}
+                                    <td>
+                                        <button type="button" class="details" disabled>Assign to me</button>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <button type="button" class="details" onclick='toggleDescription("{{task.description}}")'>Assign to me</button>
+                                    </td>
+                                {% endif %}
+                            {% endif %}
+                            
+                            {% comment %} <td id="col_value">{{req.column_value}}</td>
+                            {% ifequal req.status '0' %}
+                            <td><span id='req-{{req.pk}}' class="label label-warning">{{req.get_status_display}}</span>
+                            </td>
+                            <td style="text-align:center;"><a href="{% url 'report:delete_search' req.pk %}"
+                                                              onclick="return confirm('Are you sure?')"><i
+                                    class="fa fa-remove" style="margin-right:30px; font-size:18px;color:indianred"></i></a>
+                            </td>
+                            <td><div id="download-{{req.pk}}" style="display: none"><a id="dl-src-{{req.pk}}"href="{% url 'report:download_log' req.path %}" download><span class="label label-primary">Download</span></a><code id="download-code-{{req.pk}}">{{req.size|filesizeformat}}</code></div></td>
+                            {% endifequal %}
+                            {% ifequal req.status '1' %}
+                            <td><span id='req-{{req.pk}}' class="label label-warning">{{req.get_status_display}}</span>
+                            </td>
+                            <td style="text-align:center;"><a href="{% url 'report:delete_search' req.pk %}"
+                                                              onclick="return confirm('Are you sure?')"><i
+                                    class="fa fa-remove" style="margin-right:30px; font-size:18px;color:indianred"></i></a>
+                            </td>
+                            <td><div id="download-{{req.pk}}" style="display: none"><a id="dl-src-{{req.pk}}" href="{% url 'report:download_log' req.path %}" download><span class="label label-primary">Download</span></a><code id="download-code-{{req.pk}}">{{req.size|filesizeformat}}</code></div></td>
+                            {% endifequal %}
+                            {% ifequal req.status '3' %}
+                            <td><span id='req-{{req.pk}}' class="label label-danger">{{req.get_status_display}}</span>
+                            </td>
+                            <td style="text-align:center;"><a href="{% url 'report:delete_search' req.pk %}"
+                                                              onclick="return confirm('Are you sure?')"><i
+                                    class="fa fa-remove" style="margin-right:30px; font-size:18px;color:indianred"></i></a>
+                            </td>
+                            <td><div id="download-{{req.pk}}" style="display: none"><a id="dl-src-{{req.pk}}" href="{% url 'report:download_log' req.path %}" download><span class="label label-primary">Download</span></a><code id="download-code-{{req.pk}}">{{req.size|filesizeformat}}</code></div></td>
+                            {% endifequal %}
+                            {% ifequal req.status '2' %}
+                            <td><span id='req-{{req.pk}}' class="label label-success">{{req.get_status_display}}</span>
+                            </td>
+                            <td style="text-align:center;"><a href="{% url 'report:delete_search' req.pk %}"
+                                                              onclick="return confirm('Are you sure?')"><i
+                                    class="fa fa-remove" style="margin-right:30px; font-size:18px;color:indianred"></i></a>
+                            </td>
+                            <td><div id="download-{{req.pk}}" style="display: block"><a id="dl-src-{{req.pk}}" href="{% url 'report:download_log' req.path %}" download><span class="label label-primary">Download</span></a><code id="download-code-{{req.pk}}">{{req.size|filesizeformat}}</code></div></td>
+                            </td>
+                            {% endifequal %} {% endcomment %}
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="9">
+                                <center>There is no Task</center>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </table>
+
+                </div>
+
+            </section>
+        </div>
+    </section>
+</div>
+
+<script type="text/javascript" src="{% static '/bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static '/bower_components/moment/min/moment.min.js' %}"></script>
+<script type="text/javascript"
+        src="{% static '/bower_components/daterangepicker/daterangepicker.min.js' %}"></script>
+<script>
+    $(function () {
+        $('#reservationtime').daterangepicker({
+            timePicker: true,
+            timePicker24Hour: true,
+            timePickerIncrement: 5,
+            startDate: moment().startOf('hour').add(-2, 'hour'),
+            endDate: moment().startOf('hour').add(-1, 'hour'),
+            maxDate: moment().startOf('hour'),
+            locale: {format: 'MM/DD/YYYY HH:mm'}
+        })
+    })
+</script>
+<script>
+    function toggleDescription(dec) {
+        alert(dec)
+    }
+</script>
+{% endblock %}
