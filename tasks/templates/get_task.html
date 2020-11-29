@@ -1,0 +1,149 @@
+{% extends "task_base.html" %}
+{% load static %}
+{% comment %} {% load timestamp_tag %} {% endcomment %}
+
+{% block title %}
+<head>
+    <link rel="stylesheet"
+          href="{% static '/bower_components/bootstrap-daterangepicker/daterangepicker.css' %}">
+    <style>
+        li.my_li {
+            cursor: pointer;
+        }
+        .description {
+            background-color: #31A109;
+            border: none;
+            color: white;
+            padding: 8px 8px;
+            text-decoration: none;
+            margin: 4px 2px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .assign {
+            background-color: #ff910d;
+            border: none;
+            color: white;
+            padding: 8px 8px;
+            text-decoration: none;
+            margin: 4px 2px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+{% endblock %}
+{% block content %}
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+            Task
+        </h1>
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <section class="col-lg-12 col-md-12">
+                <div class="box box-info">
+                <div class="box box-info">
+                    <div class="box-header">
+                        <i class="fa fa-info-circle"></i>
+                        <h3 class="box-title">Task Table </h3>
+                        <!-- /. tools -->
+                    </div>
+
+                    <table id="my_table" class="table table-hover">
+                        <tr>
+                            <th>Title</th>
+                            <th>Value</th>
+                            <th>Estimation</th>
+                            <th>Deadline</th>
+                            <th>Report</th>
+                            <th>Assignee</th>
+                            <th>Description</th>
+                            {% if not request.user.is_anonymous%}
+                                <th>Details</th>
+                            {% endif %}
+                        </tr>
+                        {% if tasks %}
+                        {% for task in tasks %}
+                        <tr>
+                            <td>{{task.title}}</td>
+                            <td>{{task.value}} Toman</td>
+                            <td>{{task.estimation}} Days</td>
+                            <td>{{task.deadline}}</td>
+                            <td id="reporter">{{task.reporter.username}}</td>
+                            <td id="assignee">{{task.assignee.username}}</td>
+                            {% if task.description %}
+                                <td>
+                                    <button type="button" class="description" onclick='toggleDescription("{{task.description}}")'>Description</button>
+                                </td>
+                            {% endif %}
+                            {% if not request.user.is_anonymous %}
+                                {% if task.assignee %}
+                                    <td>
+                                        <button type="button" class="assign" id="assign" disabled>Assign to me</button>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <button type="button" class="assign" id="assign" onclick='assingTask("{{task.id}}","{{request.user.username}}")'>Assign to me</button>
+                                    </td>
+                                {% endif %}
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="9">
+                                <center>There is no Task</center>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </table>
+
+                </div>
+
+            </section>
+        </div>
+    </section>
+</div>
+
+<script type="text/javascript" src="{% static '/bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static '/bower_components/moment/min/moment.min.js' %}"></script>
+<script type="text/javascript"
+        src="{% static '/bower_components/daterangepicker/daterangepicker.min.js' %}"></script>
+
+<script>
+    function toggleDescription(dec) {
+        alert(dec)
+    }
+</script>
+<script>
+    function assingTask(task_id, username) {
+        var dataToSend = {
+            task_id: task_id,
+            assignee: username
+        }
+        console.log(dataToSend)
+        $.ajax({
+            url: "{%url 'task_assign' %}",
+            type: 'POST',
+            data : dataToSend,
+            dataType: "json",
+            success: function (response) {
+                var td = document.getElementById('assignee');
+                alter(response['responseText'])
+                td.innerHTML = dataToSend['assignee']
+                console.log("HAPPY :)")
+            },
+            error: function (response) {
+                // alert the error if any error occured
+                var td = document.getElementById('assignee');
+                alert(response['responseText']);
+                td.innerHTML = dataToSend['assignee']
+                console.log("SAD :(")
+            }
+        });
+    };
+</script>
+{% endblock %}

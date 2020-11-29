@@ -13,9 +13,8 @@ class AddTaskForm(forms.ModelForm):
                                             'id': 'reservationtime'}),
             
             'description': forms.Textarea(attrs={'class': 'form-control pull-right',
-                                                  'id': 'reservationtime'}),
+                                                 'id': 'reservationtime'}),
             
-            'deadline': forms.DateTimeInput(attrs={'placeholder': 'Enter a date',
-                                                   'class': 'datetime-inputt-date',
+            'deadline': forms.DateTimeInput(attrs={'class': 'datetime-inputt-date',
                                                    'autocomplete': 'off'}),
         }
