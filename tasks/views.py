@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.generic import View
+from django.core.paginator import Paginator
 from tasks.models import TaskModel
 from tasks.forms import AddTaskForm
 from accounts.models import UserProfile
 from django.contrib.auth.models import User
+from Crowdsourcing.settings import SHOW_TASK_PER_PAGE
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
@@ -48,9 +50,14 @@ def getAllTask(request):
 
     if request.method == 'GET':
         tasks = TaskModel.objects.all()
+        
+        page_number = request.GET.get('page')
+        paginator = Paginator(tasks, SHOW_TASK_PER_PAGE)
+        tasks = paginator.get_page(page_number)
+    
         context = {
             'tasks': tasks,
-            'request': request
+            'request': request,
         }
         return render(request, template_name, context=context)
 
@@ -63,6 +70,11 @@ def getReportedTask(request):
         user_type = request.user.userprofile.user_type
         if user_type == UserProfile.AGENT:
             reported_tasks = TaskModel.objects.filter(reporter=request.user)
+
+            page_number = request.GET.get('page')
+            paginator = Paginator(reported_tasks, SHOW_TASK_PER_PAGE)
+            reported_tasks = paginator.get_page(page_number)
+
             context = {
                 'tasks': reported_tasks,
                 'request': request
@@ -70,11 +82,16 @@ def getReportedTask(request):
             return render(request, template_name, context=context)
 
 
-def getAssignTask(request):
+def getAssignedTask(request):
     template_name = 'get_task.html'
 
     if request.method == 'GET':
         assign_tasks = TaskModel.objects.filter(assignee=request.user)
+
+        page_number = request.GET.get('page')
+        paginator = Paginator(assign_tasks, SHOW_TASK_PER_PAGE)
+        assign_tasks = paginator.get_page(page_number)
+
         context = {
                 'tasks': assign_tasks,
                 'request': request
@@ -95,10 +112,10 @@ def assignTask(request):
             assignee = User.objects.get(username=assignee_name)
             task.assignee = assignee
             task.save()
-            return HttpResponse('This task assigns to you',
+            return HttpResponse('This task assigned to you',
                                 content_type="application/json",
                                 status=200)
         except Exception as e:
-            return HttpResponse('Error eccured',
+            return HttpResponse('Error occured',
                                 content_type="application/json",
                                 status=400)

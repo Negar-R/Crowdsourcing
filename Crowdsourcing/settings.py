@@ -137,3 +137,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'new.fighting.for.goal@gmail.com'
 EMAIL_HOST_PASSWORD = 'a2+b2=c2'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+# page 
+SHOW_TASK_PER_PAGE = 2
