@@ -8,6 +8,8 @@ from accounts.models import UserProfile
 from django.contrib.auth.models import User
 from Crowdsourcing.settings import SHOW_TASK_PER_PAGE
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from tasks.permissions import is_agent
 # Create your views here.
 
 
@@ -44,7 +46,6 @@ class AddTask(View):
             return render(request, self.template_name, context=context)
 
 
-#TODO: add pageination feature
 def getAllTask(request):
     template_name = 'get_task.html'
 
@@ -62,7 +63,8 @@ def getAllTask(request):
         return render(request, template_name, context=context)
 
 
-#TODO: add decorator
+@login_required
+@is_agent
 def getReportedTask(request):
     template_name = 'get_task.html'
 
@@ -82,6 +84,7 @@ def getReportedTask(request):
             return render(request, template_name, context=context)
 
 
+@login_required
 def getAssignedTask(request):
     template_name = 'get_task.html'
 
@@ -100,6 +103,7 @@ def getAssignedTask(request):
 
 
 @csrf_exempt
+@login_required
 def assignTask(request):
     template_name = 'get_task.html'
 
