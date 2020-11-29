@@ -57,9 +57,12 @@ class Login(View):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
+        # (authenticate): verify a set of credentials and return user
         user = authenticate(request, username=username, password=password)
         if user is not None:
             if user.userprofile.is_verified:
+                # (login): saves the user’s ID in the session, \
+                # using Django’s session framework.
                 login(request, user)
                 return redirect('all_task')
             else:
