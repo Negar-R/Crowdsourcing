@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+from pathlib import Path
+from dotenv import load_dotenv, find_dotenv
+
+env_file = Path(find_dotenv(usecwd=True))
+load_dotenv(verbose=True, dotenv_path=env_file)
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'q9ezpo)75wb!p(32ufrga9#cdz1a(x%4t-0iu1z80bbmz^@-e-'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -79,11 +85,11 @@ WSGI_APPLICATION = 'Crowdsourcing.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'crowd_sourcing_db',
-        'USER': 'crowd_sourcing_user',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT', ''),
     }
 }
 
@@ -134,9 +140,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'new.fighting.for.goal@gmail.com'
-EMAIL_HOST_PASSWORD = 'a2+b2=c2'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
-# page 
+# pagination
 SHOW_TASK_PER_PAGE = 2
