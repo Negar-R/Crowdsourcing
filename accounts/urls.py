@@ -9,5 +9,6 @@ urlpatterns = [
     path('register', Registeration.as_view(), name=Registeration.name),
     path('login', Login.as_view(), name=Login.name),
     path('logout', Logout, name='logout'),
-    url(r'verify/(?P<uuid>[a-z0-9\-]+)/', verify, name='verify'),
+    # path('verify/<str:send_code>', verify, name='verify'),
+    url(r'verify/(?P<send_code>[a-z0-9\-+]+)/', verify, name='verify'),
 ]

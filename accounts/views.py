@@ -1,3 +1,6 @@
+import uuid
+from datetime import timedelta
+
 from django.shortcuts import render
 from django.core.mail import send_mail
 from django.urls import reverse
@@ -6,9 +9,11 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from django.db.utils import IntegrityError
 
-from Crowdsourcing.settings import EMAIL_HOST_USER, PROJECT_IP_ADDRESS
+from Crowdsourcing.settings import EMAIL_HOST_USER
 from accounts.models import UserProfile
+from accounts.redis_exe import Redis
 # Create your views here.
 
 
@@ -22,9 +27,26 @@ class Registeration(View):
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        user_type = request.POST.get('user_type')
 
-        user, created = User.objects.get_or_create(username=username,
-                                                   email=email)
+        if User.objects.filter(email=email).exists():
+            err_msg = "There ia one account with this email,\
+                        Please select another one."
+            context = {
+                'err_msg': err_msg
+            }
+            return render(request, 'accounts/register.html', context=context)
+        try:
+            user, created = User.objects.get_or_create(username=username,
+                                                       email=email)
+        except IntegrityError:
+            err_msg = "There ia one account with this username,\
+                        Please select another one."
+            context = {
+                'err_msg': err_msg
+            }
+            return render(request, 'accounts/register.html', context=context)
+        
         if not created:
             err_msg = "There is one user with this username, \
                        please select another one"
@@ -36,11 +58,13 @@ class Registeration(View):
             user.set_password(password)
             user.save()
 
-            profile, created = UserProfile.objects.get_or_create(user=user)
-            sendingEmail(request, email, str(profile.verification_uuid))
+            #TODO: use signal
+            profile, created = UserProfile.objects.get_or_create(user=user,
+                                                                 user_type=user_type)
+            sendingEmail(request, user.id, email)
 
             data = "Verification code was sent for your email. \
-                    Please confirm it"
+                    Please confirm it to login"
             context = {
                 'data': data
             }
@@ -54,29 +78,21 @@ class Login(View):
         return render(request, 'accounts/login.html')
 
     def post(self, request):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
+        email = request.POST.get('email')
+        
         # (authenticate): verify a set of credentials and return user
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            if user.userprofile.is_verified:
-                # (login): saves the user’s ID in the session, \
-                # using Django’s session framework.
-                login(request, user)
-                return redirect('all_task')
-            else:
-                err_msg = "You should verify your account first"
-                context = {
-                    'err_msg': err_msg
-                }
-                return render(request, 'accounts/login.html', context=context)
-        else:
-            err_msg = "You should register first"
+        try:
+            user = User.objects.get(email=email)
+            print("AUTHENTICATE : ", user)
+            sendingEmail(request, user.id, email)
+            data = "Verification code was sent for your email. \
+                Please confirm it to login"
             context = {
-                'err_msg': err_msg
+                'data': data
             }
-            return render(request, 'accounts/login.html', context=context)
+            return render(request, 'show_message.html', context=context)
+        except User.DoesNotExist:
+            return redirect('register')
         
 
 def Logout(request):
@@ -87,34 +103,57 @@ def Logout(request):
         return redirect('login')
 
 
-#TODO:make a url correct by defining a setting variable
-def sendingEmail(request, user_email, user_uuid):
+def sendingEmail(request, user_id, user_email):
+    uuid_code = str(uuid.uuid4())
+    Redis.add(user_id, timedelta(minutes=5), uuid_code)
+
     subject = 'Verify your CROWD SOURCING account'
     message = 'Follow this link to verify your account'
-    reverse_generated_link = reverse('verify', kwargs={'uuid': user_uuid})
-    link = f"{PROJECT_IP_ADDRESS}{reverse_generated_link}"
+
+    reverse_generated_link = reverse(
+        'verify', kwargs={'send_code': f"{user_id}+{uuid_code}"})
+    link = f"{request.get_host()}{reverse_generated_link}"
     send_message = f"{message}:\t{link}"
 
     try:
         send_mail(subject, send_message, EMAIL_HOST_USER, [user_email],
                   fail_silently=False)
     except Exception as e:
-        return render(request, 'accounts/register.html')
-
-
-def verify(request, uuid):
-    try:
-        user_profile = UserProfile.objects.get(verification_uuid=uuid)
-        if user_profile.is_verified:
-            return redirect('all_task')
-        else:
-            user_profile.is_verified = True
-            user_profile.save()
-            return render(request, 'accounts/login.html')
-
-    except UserProfile.DoesNotExist:
-        data = "There is no user with this verification code."
+        data = "Sending email to you was failed."
         context = {
+            'data': data
+        }
+        return render(request, 'show_message.html', context=context)
+
+
+def verify(request, send_code):
+    try:
+        user_id = send_code.split('+')[0]
+        uuid = send_code.split('+')[1]
+        original_uuid = Redis.get_user(user_id).decode('utf-8')
+        if original_uuid:
+            # (login): saves the user’s ID in the session, \
+            # using Django’s session framework.
+            if uuid == original_uuid:
+                user = User.objects.get(id=user_id)
+                login(request, user)
+                return redirect('all_task')
+            else:
+                data = "Login Failed"
+                context = {
+                    'data': data
+                }
+                return render(request, 'show_message.html', context=context)
+        else:
+            data = "Your verification code was expired"
+            context = {
                 'data': data
             }
+            return render(request, 'show_message.html', context=context)
+
+    except UserProfile.DoesNotExist:
+        data = "Login Failed"
+        context = {
+            'data': data
+        }
         return render(request, 'show_message.html', context=context)

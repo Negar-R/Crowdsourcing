@@ -29,6 +29,14 @@
                 <input type="password" class="form-control" placeholder="Password" name="password">
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
+            <div class="form-group has-feedback">
+                {% comment %} <input type="text" class="form-control" placeholder="User_Type" name="user_type"> {% endcomment %}
+                <select class="form-control" id="user_type" name="user_type">
+                    <option value="agent">agent</option>
+                    <option value="contractor">contractor</option>
+                </select>
+                <span class="glyphicon glyphicon-tag form-control-feedback"></span>
+            </div>
             <div class="row" style="text-align:center">
                 <!-- /.col -->
                 <div class="col-xs-4" style="text-align:center">
