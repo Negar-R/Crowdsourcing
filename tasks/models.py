@@ -15,7 +15,7 @@ class TaskModel(models.Model):
     updated_at = models.DateField(auto_now=True)
     reporter = models.ForeignKey(User, on_delete=models.CASCADE,
                                  related_name='reporters')
-    assignee = models.ForeignKey(User, on_delete=models.CASCADE,
+    assignee = models.ForeignKey(User, on_delete=models.SET_NULL,
                                  related_name='assignees', blank=True, null=True)
 
     def __str__(self):

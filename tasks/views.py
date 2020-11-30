@@ -9,18 +9,20 @@ from django.contrib.auth.models import User
 from Crowdsourcing.settings import SHOW_TASK_PER_PAGE
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from tasks.permissions import is_agent
 # Create your views here.
 
 
-#TODO: write a decorator.
 class AddTask(View):
     template_name = 'task_form.html'
 
+    @method_decorator([login_required, is_agent])
     def get(self, request):
         form = AddTaskForm()
         return render(request, self.template_name, {'form': form})
 
+    @method_decorator([login_required, is_agent])
     def post(self, request):
         form = AddTaskForm(request.POST)
         if form.is_valid():
@@ -50,7 +52,7 @@ def getAllTask(request):
     template_name = 'get_task.html'
 
     if request.method == 'GET':
-        tasks = TaskModel.objects.all()
+        tasks = TaskModel.objects.all().order_by('updated_at')
         
         page_number = request.GET.get('page')
         paginator = Paginator(tasks, SHOW_TASK_PER_PAGE)
@@ -71,7 +73,8 @@ def getReportedTask(request):
     if request.method == 'GET':
         user_type = request.user.userprofile.user_type
         if user_type == UserProfile.AGENT:
-            reported_tasks = TaskModel.objects.filter(reporter=request.user)
+            reported_tasks = TaskModel.objects.filter(
+                reporter=request.user).order_by('updated_at')
 
             page_number = request.GET.get('page')
             paginator = Paginator(reported_tasks, SHOW_TASK_PER_PAGE)
@@ -89,7 +92,8 @@ def getAssignedTask(request):
     template_name = 'get_task.html'
 
     if request.method == 'GET':
-        assign_tasks = TaskModel.objects.filter(assignee=request.user)
+        assign_tasks = TaskModel.objects.filter(
+            assignee=request.user).order_by('updated_at')
 
         page_number = request.GET.get('page')
         paginator = Paginator(assign_tasks, SHOW_TASK_PER_PAGE)

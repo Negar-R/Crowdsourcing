@@ -79,14 +79,16 @@
                       </a>
                     </li>
                   {% endif %}
-                  <li>
-                    <a href="{% url 'logout' %}">
-                      <h4>
-                          <i class="fa fa-sign-out"></i>
-                        Logout
-                      </h4>
-                    </a>
-                  </li>
+                  {% if request.user.is_authenticated %}
+                    <li>
+                      <a href="{% url 'logout' %}">
+                        <h4>
+                            <i class="fa fa-sign-out"></i>
+                          Logout
+                        </h4>
+                      </a>
+                    </li>
+                  {% endif %}
                   <!-- end task item -->
                 </ul>
               </li>
