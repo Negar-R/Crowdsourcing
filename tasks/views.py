@@ -127,3 +127,12 @@ def assignTask(request):
             return HttpResponse('Error occured',
                                 content_type="application/json",
                                 status=400)
+
+
+def seeDescription(request, task_id):
+    task = TaskModel.objects.get(id=task_id)
+    task_description = task.description
+    context = {
+        'description': task_description
+    }
+    return render(request, 'show_description.html', context=context)
