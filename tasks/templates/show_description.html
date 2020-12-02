@@ -1,0 +1,51 @@
+{% extends "task_base.html" %}
+{% load static %}
+
+{% comment %} {% load timestamp_tag %} {% endcomment %}
+
+{% block title %}
+<head>
+    <link rel="stylesheet"
+          href="{% static '/bower_components/bootstrap-daterangepicker/daterangepicker.css' %}">
+    <style>
+        li.my_li {
+            cursor: pointer;
+        }
+        .description {
+            position: relative;
+            padding: 20px 20px;
+         }
+        </style>
+</head>
+{% endblock %}
+{% block content %}
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>
+            Task
+        </h1>
+    </section>
+
+    {% load cache %}
+    {% cache 300 description %}
+    <section class="content">
+        <div class="row">
+            <section class="col-lg-12 col-md-12">
+                <div class="box box-info">
+                <div class="box box-info">
+                    <div class="box-header">
+                        <i class="fa fa-info-circle"></i>
+                        <h3 class="box-title">Task Description </h3>
+                        <!-- /. tools -->
+                    </div>
+                    {% if description %}
+                        <div class="description" style=""><h4>{{ description }}</h4></div>
+                    {% endif %}
+                </div>
+                </div>
+            </section>
+        </div>
+    </section>
+    {% endcache %}
+</div>
+{% endblock %}
