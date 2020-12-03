@@ -93,6 +93,8 @@ DATABASES = {
     }
 }
 
+# caching
+
 CACHES = {  
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -100,6 +102,62 @@ CACHES = {
     }
 }
 
+#logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s:%(name)s:%(message)s',
+        },
+        'simple': {
+            'format': '%(name)s:%(funcName)s:%(message)s',
+        },
+    },
+    'handlers': {
+        'accounts_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'accounts_logging.log',
+            'formatter': 'verbose'
+        },
+        'tasks_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'tasks_logging.log',
+            'formatter': 'verbose'
+        },
+        'django_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/crowd_sourcing.log',
+            'formatter': 'verbose'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'django_file'],
+            'propagate': True,
+            'level': 'DEBUG'
+        },
+        'accounts': {
+            'handlers': ['console', 'accounts_file'],
+            'propagate': True,
+            'level': 'DEBUG'
+        },
+        'tasks': {
+            'handlers': ['console', 'tasks_file'],
+            'propagate': True,
+            'level': 'DEBUG'
+        }, 
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -142,6 +200,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 PROJECT_IP_ADDRESS = 'http://localhost:8000'
+
 # Send Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
