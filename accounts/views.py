@@ -1,4 +1,5 @@
 import uuid
+import logging
 from datetime import timedelta
 
 from django.shortcuts import render
@@ -16,11 +17,14 @@ from accounts.models import UserProfile
 from accounts.redis_exe import Redis
 # Create your views here.
 
+logger = logging.getLogger(__name__)
+
 
 class Registeration(View):
     name = 'register'
     
     def get(self, request):
+        logger.debug("GET request method to registration view")
         return render(request, 'accounts/register.html')
 
     def post(self, request):
@@ -35,6 +39,8 @@ class Registeration(View):
             context = {
                 'err_msg': err_msg
             }
+            logger.info("Duplicate email : {}".format(email))
+
             return render(request, 'accounts/register.html', context=context)
         try:
             user, created = User.objects.get_or_create(username=username,
@@ -45,6 +51,9 @@ class Registeration(View):
             context = {
                 'err_msg': err_msg
             }
+
+            logger.info("Duplicate username : {}".format(username))
+
             return render(request, 'accounts/register.html', context=context)
         
         if not created:
@@ -53,6 +62,9 @@ class Registeration(View):
             context = {
                 'err_msg': err_msg
             }
+
+            logger.info("Duplicate username : {}".format(username))
+
             return render(request, 'accounts/register.html', context=context)
         else:
             user.set_password(password)
@@ -68,6 +80,11 @@ class Registeration(View):
             context = {
                 'data': data
             }
+
+            # It is not recommended to log user sensitive data
+            logger.info("New profile with {} username was created".
+                        format(username))
+
             return render(request, 'show_message.html', context=context)
 
 
@@ -75,6 +92,7 @@ class Login(View):
     name = 'login'
 
     def get(self, request):
+        logger.debug("get request method to login view")
         return render(request, 'accounts/login.html')
 
     def post(self, request):
@@ -90,14 +108,20 @@ class Login(View):
             context = {
                 'data': data
             }
+
+            logger.info("login email sent to user with email: {}".format(email))
+
             return render(request, 'show_message.html', context=context)
         except User.DoesNotExist:
+            logger.info("user with email: {} does not exist".format(email))
             return redirect('register')
         
 
 def Logout(request):
     if request.user.is_authenticated:
         logout(request)
+        logger.info("user with username: {} loged out"
+                    .format(request.user.username))
         return redirect('all_task')
     else:
         return redirect('login')
@@ -118,11 +142,15 @@ def sendingEmail(request, user_id, user_email):
     try:
         send_mail(subject, send_message, EMAIL_HOST_USER, [user_email],
                   fail_silently=False)
+        logger.info("email was sent to user with email: {}".format(user_email))
     except Exception as e:
         data = "Sending email to you was failed."
         context = {
             'data': data
         }
+
+        logger.error("sendig email to {} was failed".format(user_email))
+
         return render(request, 'show_message.html', context=context)
 
 
@@ -137,18 +165,28 @@ def verify(request, send_code):
             if uuid == original_uuid:
                 user = User.objects.get(id=user_id)
                 login(request, user)
+                logger.info("user with username: {} loged in"
+                            .format(user.username))
                 return redirect('all_task')
             else:
                 data = "Login Failed"
                 context = {
                     'data': data
                 }
+
+                logger.info("uuid_code of user with id: {} was not found"
+                            .format(user_id))
+
                 return render(request, 'show_message.html', context=context)
         else:
             data = "Your verification code was expired"
             context = {
                 'data': data
             }
+
+            logger.info("uuid_code of user with id: {} was expired"
+                        .format(user_id))
+
             return render(request, 'show_message.html', context=context)
 
     except UserProfile.DoesNotExist:
@@ -156,4 +194,7 @@ def verify(request, send_code):
         context = {
             'data': data
         }
+
+        logger.info("user profile not found")
+
         return render(request, 'show_message.html', context=context)

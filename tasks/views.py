@@ -1,17 +1,23 @@
-from django.shortcuts import render, redirect
+import logging
+
 from django.http import HttpResponse
 from django.views.generic import View
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+
+from accounts.models import UserProfile
+from tasks.permissions import is_agent
 from tasks.models import TaskModel
 from tasks.forms import AddTaskForm
-from accounts.models import UserProfile
-from django.contrib.auth.models import User
 from Crowdsourcing.settings import SHOW_TASK_PER_PAGE
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from tasks.permissions import is_agent
+
 # Create your views here.
+
+logger = logging.getLogger(__name__)
 
 
 class AddTask(View):
@@ -20,6 +26,7 @@ class AddTask(View):
     @method_decorator([login_required, is_agent])
     def get(self, request):
         form = AddTaskForm()
+        logger.debug("GET request method to add_task view")
         return render(request, self.template_name, {'form': form})
 
     @method_decorator([login_required, is_agent])
@@ -38,6 +45,10 @@ class AddTask(View):
                                             deadline=deadline,
                                             description=description,
                                             reporter=request.user)
+
+            logger.info('task with id:{} was created by user:{}'
+                        .format(task.id, request.user.username))
+
             return redirect('all_task')
         else:
             err_msg = "Invalid Input"
@@ -45,6 +56,9 @@ class AddTask(View):
                 'err_msg': err_msg,
                 'form': form
             }
+
+            logger.info('add_task form error: {}'.format(form.errors))
+
             return render(request, self.template_name, context=context)
 
 
@@ -62,6 +76,9 @@ def getAllTask(request):
             'tasks': tasks,
             'request': request,
         }
+
+        logger.info('GET request method to get_all_task view')
+
         return render(request, template_name, context=context)
 
 
@@ -84,6 +101,10 @@ def getReportedTask(request):
                 'tasks': reported_tasks,
                 'request': request
             }
+
+            logger.info('user with username: {} saw owns reported_tasks'
+                        .format(request.user.username))
+
             return render(request, template_name, context=context)
 
 
@@ -103,6 +124,10 @@ def getAssignedTask(request):
                 'tasks': assign_tasks,
                 'request': request
         }
+
+        logger.info('user with username: {} saw owns assigned_tasks'
+                    .format(request.user.username))
+
         return render(request, template_name, context=context)
 
 
@@ -120,10 +145,18 @@ def assignTask(request):
             assignee = User.objects.get(username=assignee_name)
             task.assignee = assignee
             task.save()
+
+            logger.info('user with username: {} assign task_id: {} to own'
+                        .format(request.user.username, task_id))
+
             return HttpResponse('This task assigned to you',
                                 content_type="application/json",
                                 status=200)
         except Exception as e:
+
+            logger.warning('assigning task_id:{} to username:{} was unsuccessful'
+                         .format(task_id, request.user.username))
+
             return HttpResponse('Error occured',
                                 content_type="application/json",
                                 status=400)
@@ -135,4 +168,7 @@ def seeDescription(request, task_id):
     context = {
         'description': task_description
     }
+
+    logger.info('description of task_id: {} was shown'.format(task_id))
+
     return render(request, 'show_description.html', context=context)
