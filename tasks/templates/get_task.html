@@ -56,13 +56,13 @@
 
                     <table id="my_table" class="table table-hover">
                         <tr>
-                            <th style="width:16%">Title</th>
-                            <th style="width:12%">Value</th>
-                            <th style="width:12%">Estimation</th>
-                            <th style="width:13%">Deadline</th>
-                            <th style="width:12%">Report</th>
-                            <th style="width:12%">Assignee</th>
-                            <th style="width:12%">Description</th>
+                            <th style="width:16%;">Title</th>
+                            <th style="width:12%; height: 70px;">Value</th>
+                            <th style="width:12%; height: 70px;">Estimation</th>
+                            <th style="width:13%; height: 70px;">Deadline</th>
+                            <th style="width:12%; height: 70px;">Report</th>
+                            <th style="width:12%; height: 70px;">Assignee</th>
+                            <th style="width:12%; height: 70px;">Description</th>
                             {% if not request.user.is_anonymous%}
                                 <th>Details</th>
                             {% endif %}
@@ -70,25 +70,25 @@
                         {% if tasks %}
                         {% for task in tasks %}
                         <tr>
-                            <td>{{task.title}}</td>
-                            <td>{{task.value}} Toman</td>
-                            <td>{{task.estimation}} Days</td>
-                            <td>{{task.deadline}}</td>
-                            <td id="reporter">{{task.reporter.username}}</td>
-                            <td id="assignee">{{task.assignee.username}}</td>
+                            <td style="height: 70px;">{{task.title}}</td>
+                            <td style="height: 70px;">{{task.value}} Toman</td>
+                            <td style="height: 70px;">{{task.estimation}} Days</td>
+                            <td style="height: 70px;">{{task.deadline}}</td>
+                            <td id="reporter" style="height: 70px;">{{task.reporter.username}}</td>
+                            <td id="assignee" style="height: 70px;">{{task.assignee.username}}</td>
                             {% if task.description %}
-                                <td>
+                                <td style="height: 70px;">
                                     <a class="description" href="{%url 'see_description' task_id=task.id %}">Description</a>
                                     {% comment %} <button type="button" class="description" onclick='toggleDescription("{{task.description}}")'>Description</button> {% endcomment %}
                                 </td>
                             {% endif %}
                             {% if not request.user.is_anonymous %}
                                 {% if task.assignee %}
-                                    <td>
+                                    <td style="height: 70px;">
                                         <button type="button" class="assign" id="assign" disabled>Assign to me</button>
                                     </td>
                                 {% else %}
-                                    <td>
+                                    <td style="height: 70px;">
                                         <button type="button" class="assign" id="assign" onclick='assingTask("{{task.id}}","{{request.user.username}}")'>Assign to me</button>
                                     </td>
                                 {% endif %}
