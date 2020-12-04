@@ -155,7 +155,7 @@ def assignTask(request):
         except Exception as e:
 
             logger.warning('assigning task_id:{} to username:{} was unsuccessful'
-                         .format(task_id, request.user.username))
+                           .format(task_id, request.user.username))
 
             return HttpResponse('Error occured',
                                 content_type="application/json",
