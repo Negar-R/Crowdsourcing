@@ -54,9 +54,9 @@ python manage.py test tasks
 
 URL | Description
 --- | ---
-``127.0.0.1:8000/accounts/register`` | Some actions on this site require to be enrolled first. Then we send you a verification email and you should verify it to redirect to the `login` page. So please enter a valid email !
+``127.0.0.1:8000/accounts/register`` | Some actions on this site require to be enrolled first. Then we send you a verification email and you should verify it. So please enter a valid email !
 ``127.0.0.1:8000/accounts/login`` | When you want to sign in to your account, give us your email. After that, we send you a code and by clicking on it, you can be logged in.
-``127.0.0.1:8000/tasks/all_task`` | You can see all tasks here. They are sorted by last modified time. To see this page, it is necessary to login.
+``127.0.0.1:8000/tasks/all_task`` | You can see all tasks here. They are sorted by last modified time. To see this page, it is not necessary to login.
 ``127.0.0.1:8000/tasks/reported_task`` | Any user that is an agent can see all tasks that are reported by the individual.
 ``127.0.0.1:8000/tasks/assigned_task`` | See the tasks that should be done by you, here.
 ``127.0.0.1:8000/tasks/add_task`` | Agents can create new tasks, from here.
