@@ -26,8 +26,6 @@
         </h1>
     </section>
 
-    {% load cache %}
-    {% cache 300 description %}
     <section class="content">
         <div class="row">
             <section class="col-lg-12 col-md-12">
@@ -38,14 +36,16 @@
                         <h3 class="box-title">Task Description </h3>
                         <!-- /. tools -->
                     </div>
+                    {% load cache %}
+                    {% cache 300 description task_id%}
                     {% if description %}
                         <div class="description" style=""><h4>{{ description }}</h4></div>
                     {% endif %}
+                    {% endcache %}
                 </div>
                 </div>
             </section>
         </div>
     </section>
-    {% endcache %}
 </div>
 {% endblock %}
