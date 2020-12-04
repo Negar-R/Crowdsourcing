@@ -101,7 +101,6 @@ class Login(View):
         # (authenticate): verify a set of credentials and return user
         try:
             user = User.objects.get(email=email)
-            print("AUTHENTICATE : ", user)
             sendingEmail(request, user.id, email)
             data = "Verification code was sent for your email. \
                 Please confirm it to login"
