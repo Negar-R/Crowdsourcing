@@ -20,8 +20,6 @@ class UserProfile(models.Model):
                                  default=CONTRACTOR)
     phone = models.CharField(max_length=11, null=True, blank=True)
     age = models.IntegerField(null=True, blank=True)
-    verification_uuid = models.UUIDField('Unique Verification UUID',
-                                         default=uuid.uuid4)
 
     def __str__(self):
         return self.user.username
