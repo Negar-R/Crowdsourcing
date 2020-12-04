@@ -8,7 +8,7 @@ from tasks.models import TaskModel
 class AddTaskForm(forms.ModelForm):
     class Meta:
         model = TaskModel
-        fields = ['title', 'value', 'estimation', 'deadline', 'description']
+        fields = ['title', 'value', 'estimation', 'description']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control pull-right',
                                             'id': 'reservationtime'}),
@@ -16,10 +16,7 @@ class AddTaskForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control pull-right',
                                                  'id': 'reservationtime'}),
             
-            'deadline': forms.DateTimeInput(attrs={'class': 'datetime-inputt-date',
-                                                   'autocomplete': 'off',
-                                                   'placeholder': '2021-01-18'}),
-        }
+           }
 
     def clean(self):
         value = self.cleaned_data.get('value')
@@ -33,5 +30,5 @@ class AddTaskForm(forms.ModelForm):
             raise forms.ValidationError(
                 "Maximum value for tasks with estimation lower than \
                 3 days is 30.000")
-                
+
         return self.cleaned_data

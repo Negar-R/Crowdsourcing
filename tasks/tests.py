@@ -37,7 +37,6 @@ class TestTaskView(TestCase):
             title='task_title',
             value=5000,
             estimation=3,
-            deadline='2021-03-10',
             description='task_description',
             reporter=self.reported_user,
             
@@ -105,7 +104,6 @@ class TestTaskView(TestCase):
             'title': 'added_task_title',
             'value': 3000,
             'estimation': 8,
-            'deadline': '2020-12-20',
             'description': 'added_task_description'
         }
         response = self.client.post(self.add_task, data=post_data)

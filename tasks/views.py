@@ -161,9 +161,10 @@ def assignTask(request):
 
 
 def seeDescription(request, task_id):
-    task = TaskModel.objects.filter(id=task_id).values('description')
+    task = TaskModel.objects.filter(id=task_id).values('id', 'description')
     task_description = task[0]['description']
     context = {
+        'task_id': task[0]['id'],
         'description': task_description
     }
 

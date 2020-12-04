@@ -9,7 +9,6 @@ class TaskModel(models.Model):
     slug = models.SlugField(unique=True, blank=True, null=True)
     value = models.PositiveIntegerField()
     estimation = models.PositiveIntegerField()
-    deadline = models.DateTimeField()
     description = models.TextField(blank=True, null=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
