@@ -36,13 +36,11 @@ class AddTask(View):
             title = form.cleaned_data.get('title')
             value = form.cleaned_data.get('value')
             estimation = form.cleaned_data.get('estimation')
-            deadline = form.cleaned_data.get('deadline')
             description = form.cleaned_data.get('description')
 
             task = TaskModel.objects.create(title=title,
                                             value=value,
                                             estimation=estimation,
-                                            deadline=deadline,
                                             description=description,
                                             reporter=request.user)
 
@@ -163,8 +161,8 @@ def assignTask(request):
 
 
 def seeDescription(request, task_id):
-    task = TaskModel.objects.get(id=task_id)
-    task_description = task.description
+    task = TaskModel.objects.filter(id=task_id).values('description')
+    task_description = task[0]['description']
     context = {
         'description': task_description
     }

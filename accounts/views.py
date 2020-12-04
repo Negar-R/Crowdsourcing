@@ -3,18 +3,19 @@ import logging
 from datetime import timedelta
 
 from django.shortcuts import render
-from django.core.mail import send_mail
 from django.urls import reverse
-from django.views.generic import View
 from django.http import HttpResponse
-from django.contrib.auth import authenticate, login, logout
+from django.core.mail import send_mail
+from django.views.generic import View
+from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from django.db.utils import IntegrityError
+from django.contrib.auth import login, logout
 
-from Crowdsourcing.settings import EMAIL_HOST_USER
-from accounts.models import UserProfile
+
 from accounts.redis_exe import Redis
+from accounts.models import UserProfile
+from Crowdsourcing.settings import EMAIL_HOST_USER
 # Create your views here.
 
 logger = logging.getLogger(__name__)
@@ -98,10 +99,9 @@ class Login(View):
     def post(self, request):
         email = request.POST.get('email')
         
-        # (authenticate): verify a set of credentials and return user
         try:
-            user = User.objects.get(email=email)
-            sendingEmail(request, user.id, email)
+            user = User.objects.filter(email=email).values('id', 'email')
+            sendingEmail(request, user[0]['id'], user[0]['email'])
             data = "Verification code was sent for your email. \
                 Please confirm it to login"
             context = {
@@ -119,7 +119,7 @@ class Login(View):
 def Logout(request):
     if request.user.is_authenticated:
         logout(request)
-        logger.info("user with username: {} loged out"
+        logger.info("user with username: {} logged out"
                     .format(request.user.username))
         return redirect('all_task')
     else:
@@ -130,7 +130,7 @@ def sendingEmail(request, user_id, user_email):
     uuid_code = str(uuid.uuid4())
     Redis.add(user_id, timedelta(minutes=5), uuid_code)
 
-    subject = 'Verify your CROWD SOURCING account'
+    subject = 'Verify your CROWDSOURCING account'
     message = 'Follow this link to verify your account'
 
     reverse_generated_link = reverse(
@@ -164,7 +164,7 @@ def verify(request, send_code):
             if uuid == original_uuid:
                 user = User.objects.get(id=user_id)
                 login(request, user)
-                logger.info("user with username: {} loged in"
+                logger.info("user with username: {} logged in"
                             .format(user.username))
                 return redirect('all_task')
             else:
