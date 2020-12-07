@@ -228,3 +228,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # pagination
 SHOW_TASK_PER_PAGE = 5
+
+# for deploying on heroku
+import django_heroku
+django_heroku.settings(locals())
