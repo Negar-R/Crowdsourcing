@@ -149,6 +149,7 @@ def sendingEmail(request, user_id, user_email):
         }
 
         logger.error("sendig email to {} was failed".format(user_email))
+        logger.error(e)
 
         return render(request, 'show_message.html', context=context)
 
@@ -157,8 +158,9 @@ def verify(request, send_code):
     try:
         user_id = send_code.split('+')[0]
         uuid = send_code.split('+')[1]
-        original_uuid = Redis.get_user(user_id).decode('utf-8')
+        original_uuid = Redis.get_user(user_id)
         if original_uuid:
+            original_uuid = original_uuid.decode('utf-8')
             # (login): saves the user’s ID in the session, \
             # using Django’s session framework.
             if uuid == original_uuid:
