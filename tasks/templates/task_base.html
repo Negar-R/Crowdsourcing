@@ -27,8 +27,6 @@
     <!-- jvectormap -->
     <link rel="stylesheet" href="{% static '/bower_components/jvectormap/jquery-jvectormap.css' %}">
     <!-- Date Picker -->
-    <link rel="stylesheet"
-          href="{% static '/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
     <!-- Daterange picker -->
     <link rel="stylesheet"
           href="{% static '/bower_components/bootstrap-daterangepicker/daterangepicker.css' %}">
@@ -160,17 +158,17 @@
 <script src="{% static '/bower_components/raphael/raphael.min.js' %}"></script>
 <!--<script src="{% static '/bower_components/morris.js-0.5.1/morris.min.js' %}"></script>-->
 <!-- Sparkline -->
-<script src="{% static '/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js' %}"></script>
+{% comment %} <script src="{% static '/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js' %}"></script> {% endcomment %}
 <!-- jvectormap -->
 <script src="{% static '/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
 <script src="{% static '/plugins/jvectormap/jquery-jvectormap-world-mill-en.js' %}"></script>
 <!-- jQuery Knob Chart -->
-<script src="{% static '/bower_components/jquery-knob/dist/jquery.knob.min.js' %}"></script>
+{% comment %} <script src="{% static '/bower_components/jquery-knob/dist/jquery.knob.min.js' %}"></script> {% endcomment %}
 <!-- daterangepicker -->
-<script src="{% static '/bower_components/moment/min/moment.min.js' %}"></script>
-<script src="{% static '/bower_components/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+{% comment %} <script src="{% static '/bower_components/moment/min/moment.min.js' %}"></script> {% endcomment %}
+{% comment %} <script src="{% static '/bower_components/bootstrap-daterangepicker/daterangepicker.js' %}"></script> {% endcomment %}
 <!-- datepicker -->
-<script src="{% static '/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+{% comment %} <script src="{% static '/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script> {% endcomment %}
 <!-- Bootstrap WYSIHTML5 -->
 <script src="{% static '/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js' %}"></script>
 <!-- Slimscroll -->
