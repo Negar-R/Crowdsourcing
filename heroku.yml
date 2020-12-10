@@ -6,7 +6,7 @@ build:
     docker:
       redis: redis/Dockerfile
       cache: cache/Dockerfile
-      web: web/Dockerfile
+      web: Dockerfile
     config:
       EMAIL_HOST_USER: new.fighting.for.goal@gmail.com
       EMAIL_HOST_PASSWORD: a2+b2=c2
@@ -15,8 +15,8 @@ build:
       MEMCACHED_HOST: cache
       MEMCACHED_PORT: 11211
 release:
+    image: web
     command:
       - ./deployment_tasks.sh
-    image: web
 run:
-    web: python manage.py runserver 0.0.0.0:8000
+    web: gunicorn Crowdsourcing.wsgi:application

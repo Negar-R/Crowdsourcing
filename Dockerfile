@@ -11,6 +11,7 @@ RUN mkdir /code
 WORKDIR /code
 
 RUN pip install --upgrade pip
+
 COPY requirements.txt /code/
 
 RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev \
@@ -19,5 +20,3 @@ RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev \
 COPY . /code/
 
 EXPOSE 8000
-
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
