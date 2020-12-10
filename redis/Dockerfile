@@ -1,0 +1,1 @@
+From redis:5-alpine

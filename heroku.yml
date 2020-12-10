@@ -1,0 +1,22 @@
+setup:
+  addons:
+    - plan: heroku-postgresql
+      as: DATABASE
+build:
+    docker:
+      redis: redis/Dockerfile
+      cache: cache/Dockerfile
+      web: web/Dockerfile
+    config:
+      EMAIL_HOST_USER: new.fighting.for.goal@gmail.com
+      EMAIL_HOST_PASSWORD: a2+b2=c2
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      MEMCACHED_HOST: cache
+      MEMCACHED_PORT: 11211
+release:
+    command:
+      - ./deployment_tasks.sh
+    image: web
+run:
+    web: python manage.py runserver 0.0.0.0:8000

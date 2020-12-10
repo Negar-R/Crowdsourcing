@@ -95,3 +95,8 @@ nginx.conf
 # **/migrations/**
 # !**/migrations
 # !**/migrations/__init__.py
+
+# volumes directory
+postgres_data/
+redis.conf/
+memcached_data/
