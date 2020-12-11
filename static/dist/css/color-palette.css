@@ -1,0 +1,70 @@
+.skin-blue .main-header .navbar{
+    background-image: linear-gradient(to right,#1d3e53,#476d7c)!important;
+}
+.skin-blue .sidebar-menu > li.header{
+    color: rgb(200,200,200)!important;
+    background-color:#1d3e53 !important ;
+    font-weight: bolder;
+}
+.skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side{
+    background-color:#1d3e53 !important;
+
+}
+.skin-blue .sidebar a{
+    color: rgb(200,200,200)!important;
+}
+.skin-blue .sidebar-menu > li:hover > a {
+    background-image: linear-gradient(to right,rgba(37,75,98,230),rgba(37,75,98,230))!important;
+    /* color:#b8c7ce!important; */
+    border-left-color: white!important;
+    color:white!important;
+}
+.skin-blue .sidebar-menu > li > .treeview-menu{
+    background-color: #476d7c!important;   
+}
+.skin-blue .sidebar-menu > li.active > a{
+    background-image: linear-gradient(to right,rgba(37,75,98,0.6),rgba(37,75,98,0.6))!important;
+    border-left-color: white!important;
+    color:white!important;
+    background:rgba(37,75,98,230)!important ;
+}
+.skin-blue .sidebar-menu .treeview-menu > li > a:hover,
+.skin-blue .sidebar-menu .treeview-menu > li.active span{
+    color:white!important;
+}
+.skin-blue .sidebar-menu > li.menu-open > a{
+    background-image: linear-gradient(to right,rgba(37,75,98,230),rgba(37,75,98,230))!important;
+    border-left-color: white!important;
+}
+.box.box-info{
+    border-top-color:rgba(37,75,98,230)!important;
+}
+.skin-blue .main-header .logo{
+    background-color: rgb(71,109,124,200)!important;
+}
+.btn-primary, 
+.btn-info{
+    background-color:#107595!important ;
+    border-color: #107595!important;
+    box-shadow: 0 0 5px rgb(150,150,150);
+}
+.btn-primary:hover,
+.btn-info:hover{
+    background-color: #145374!important;
+    border-color: #145374;
+    box-shadow: none;
+}
+.btn-success{
+    background-color: #0b8457;
+    border-color: #0b8457;
+    box-shadow: 0 0 5px rgb(150,150,150);
+}
+.btn-success:hover,
+.btn-success:active{
+    background-color:#096c47;
+    border-color:  #096c47;
+    box-shadow: none;
+}
+.table{
+    margin-bottom: 10px!important;
+}
