@@ -14,6 +14,39 @@ git clone https://github.com/Negar-R/Crowdsourcing.git
 cd Crowdsourcing
 ```
 
+Now, you should set environment variables in `.env` file. to do this : 
+
+```
+touch .env
+```
+
+And make a value for these keys in .env file:
+- SECRET_KEY: these your django project secret key
+- DB_NAME
+- DB_USER
+- DB_PASS
+- DB_HOST
+- DB_PORT
+- REDIS_HOST
+- REDIS_PORT
+- MEMCACHED_HOST
+- MEMCACHED_PORT
+- EMAIL_HOST_USER: this is your email address that used to send email to users
+- EMAIL_HOST_PASSWORD: your email password
+- BACKUP_DIR: directory of saving databse-backup files on the host
+- MINIO_ACCESS_KEY: MinIO access key
+- MINIO_SECRET: MinIO secret key
+
+### Run through Docker Compose
+
+This project is multi-container Docker application that usese different services such as postgres, redis, memcached, etc. So, it dockerized using docker compose to run easily:
+
+```
+docker-compose up
+```
+
+### Run without Docker
+
 To activate virtual environments and install dependencies in, run the below commands:
 
 ```
