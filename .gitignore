@@ -74,3 +74,4 @@ nginx.conf
 postgres_data/
 redis.conf/
 memcached_data/
+mnt/
