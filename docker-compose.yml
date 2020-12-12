@@ -10,9 +10,9 @@ services:
     volumes:
         - ./postgres_data:/var/lib/postgresql/data/
     environment:
-        - POSTGRES_PASSWORD=123456
-        - POSTGRES_DB=crowdsourcing_db
-        - POSTGRES_USER=crowdsourcing_user
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=crowdsourcing_db
+      - POSTGRES_USER=crowdsourcing_user
     restart: unless-stopped
   
   redis:
@@ -37,6 +37,22 @@ services:
     volumes:
       - ./memcached_data:/usr/local/etc/memcached_data
     restart: unless-stopped
+  
+  minio:
+    image: minio/minio
+    ports: 
+      - 9000:9000
+    expose:
+      - "9000"
+    volumes:
+      - ./mnt/data:/minio_data
+    environment:
+      - MINIO_ACCESS_KEY=test!crowdsourcing_minio
+      - MINIO_SECRET_KEY=secret!crowdsourcing_minio
+    command: server /data
+    depends_on:
+      - db
+    restart: unless-stopped
 
   web:
     build: .
@@ -50,3 +66,4 @@ services:
       - db
       - redis
       - cache
+      - minio
