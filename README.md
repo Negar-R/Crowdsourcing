@@ -2,6 +2,9 @@
 
 > Crowdsourcing software development or software crowdsourcing is an emerging area of software engineering. It is an open call for participation in any task of software development, including documentation, design, coding and testing. These tasks are normally conducted by either members of a software enterprise or people contracted by the enterprise. But in software crowdsourcing, all the tasks can be assigned to or are addressed by members of the general public. Individuals and teams may also participate in crowdsourcing contests.
 
+the project's demo is visible through the following link:
+https://crowdsourcing-web-negar.fandogh.cloud
+
 ## Setup project locally
 
 [![Python Version](https://img.shields.io/badge/python-3.7-brightgreen.svg)](https://python.org)
