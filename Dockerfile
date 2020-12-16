@@ -18,9 +18,6 @@ RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev \
     
 COPY . /code/
 
-EXPOSE 8000
+EXPOSE 80
 
-RUN python manage.py makemigrations \
-    && python manage.py migrate
-
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["sh", "deploy_fandogh.sh"]
