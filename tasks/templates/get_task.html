@@ -160,6 +160,7 @@
                 // alert the error if any error occured
                 var td = document.getElementById('assignee');
                 alert(response['responseText']);
+                td.innerHTML = dataToSend['assignee']
                 console.log("SAD :(")
             }
         });

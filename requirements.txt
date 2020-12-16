@@ -5,7 +5,7 @@ Django==2.2
 django-bower==5.2.0
 django-cors-headers==3.5.0
 django-heroku==0.3.1
-dump @ git+https://github.com/Jaymon/dump@40045669e07cc2676a9fa92afcf5ef18f10f2fcc
+# dump @ git+https://github.com/Jaymon/dump@40045669e07cc2676a9fa92afcf5ef18f10f2fcc
 gunicorn==20.0.4
 minio==6.0.2
 psycopg2==2.8.6

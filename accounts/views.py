@@ -111,7 +111,7 @@ class Login(View):
             logger.info("login email sent to user with email: {}".format(email))
 
             return render(request, 'show_message.html', context=context)
-        except User.DoesNotExist:
+        except (User.DoesNotExist, IndexError):
             logger.info("user with email: {} does not exist".format(email))
             return redirect('register')
         
@@ -135,7 +135,7 @@ def sendingEmail(request, user_id, user_email):
 
     reverse_generated_link = reverse(
         'verify', kwargs={'send_code': f"{user_id}+{uuid_code}"})
-    link = f"{request.get_host()}{reverse_generated_link}"
+    link = f"https://{request.get_host()}{reverse_generated_link}"
     send_message = f"{message}:\t{link}"
 
     try:

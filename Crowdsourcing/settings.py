@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import dj_database_url
 from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
 
@@ -91,19 +90,17 @@ DATABASES = {
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASS'),
         'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT', ''),
+        'PORT': os.environ.get('DB_PORT_NUMBER', 5432),
     }
 }
 
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
 
 # caching
 
 CACHES = {  
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        'LOCATION': f"{os.environ.get('MEMCACHED_HOST')}:{os.environ.get('MEMCACHED_PORT_NUMBER')}",
     }
 }
 
@@ -228,7 +225,3 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # pagination
 SHOW_TASK_PER_PAGE = 5
-
-# for deploying on heroku
-import django_heroku
-django_heroku.settings(locals())
