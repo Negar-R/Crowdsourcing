@@ -1,0 +1,44 @@
+kind: ExternalService
+name: db-service
+spec:
+  image: library/postgres:12.5-alpine
+  port_mapping: 
+    - port: 5432
+      target_port: 5432
+      protocol: TCP
+  env:
+    - name: POSTGRES_PASSWORD
+      value: crowdsourcing_pass
+    - name: POSTGRES_USER
+      value: crowdsourcing_user
+    - name: POSTGRES_DB
+      value: crowdsourcing_db
+  volume_mounts: 
+    - mount_path: /postgres_data/postgres
+      sub_path: postgres
+
+---
+kind: ExternalService
+name: redis-service
+spec:
+  image: library/redis:5-alpine
+  port_mapping: 
+    - port: 6379
+      target_port: 6379
+      protocol: TCP
+  volume_mounts: 
+    - mount_path: /redis_data/redis
+      sub_path: redis
+    
+---
+kind: ExternalService
+name: memcached-service
+spec:
+  image: library/memcached:1.6.9-alpine
+  port_mapping: 
+    - port: 11211
+      target_port: 11211
+      protocol: TCP
+  volume_mounts: 
+    - mount_path: /memcached_data/memcached
+      sub_path: memcached

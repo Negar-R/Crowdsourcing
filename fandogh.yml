@@ -1,0 +1,5 @@
+kind: ExternalService
+name: crowdsourcing-web
+spec:
+  image: crowdsourcing:1.2
+  port: 80
