@@ -1,6 +1,7 @@
 import functools
 
 from django.http import HttpResponse
+from django.core.exceptions import PermissionDenied
 from accounts.models import UserProfile
 
 
@@ -10,5 +11,5 @@ def is_agent(func):
         if request.user.userprofile.user_type == UserProfile.AGENT:
             return func(request, *args, **kwargs)
         else:
-            return HttpResponse("Permission Denied", status=403)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+            raise PermissionDenied                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
     return wrapper

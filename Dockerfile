@@ -18,9 +18,10 @@ RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev \
     
 COPY . /code/
 
+# which port the container is listening on at runtime
 EXPOSE 8000
 
 RUN python manage.py makemigrations \
     && python manage.py migrate
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["sh", "cmd.sh"]
