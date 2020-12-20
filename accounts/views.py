@@ -13,7 +13,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 
 
-from accounts.redis_exe import Redis
+from Crowdsourcing.redis_exe import Redis
 from accounts.models import UserProfile
 from Crowdsourcing.settings import EMAIL_HOST_USER
 # Create your views here.
@@ -111,7 +111,7 @@ class Login(View):
             logger.info("login email sent to user with email: {}".format(email))
 
             return render(request, 'show_message.html', context=context)
-        except User.DoesNotExist:
+        except (User.DoesNotExist, IndexError):
             logger.info("user with email: {} does not exist".format(email))
             return redirect('register')
         

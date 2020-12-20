@@ -5,9 +5,12 @@ import subprocess
 from minio import Minio
 from minio.error import (ResponseError, BucketAlreadyOwnedByYou,
                          BucketAlreadyExists)
+
 from pathlib import Path
 from dotenv import load_dotenv, find_dotenv
 
+
+# load .env file
 env_file = Path(find_dotenv(usecwd=True))
 load_dotenv(verbose=True, dotenv_path=env_file)
 
@@ -29,8 +32,8 @@ cmd = ["dump", "backup",
        "--port", db_port,
        "--dir", f"{backup_dir}",
        "tasks_taskmodel", "accounts_userprofile", "auth_user"]
-p = subprocess.Popen(cmd, stdout=subprocess.PIPE, 
-                     stderr=subprocess.STDOUT).communicate()
+p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                     stderr=subprocess.STDOUT)
 
 print(p)
 
@@ -48,10 +51,9 @@ except ResponseError as err:
 
 for file in os.listdir(backup_dir):
     file_path = os.path.join(backup_dir, file)
-    try:
-        minioClient.fput_object(
-            "backups",
-            f"{datetime.datetime.now()}_{file}",
-            file_path)
-    except ResponseError as err:
-        print(err)
+    minioClient.fput_object(
+        "backups",
+        f"{datetime.datetime.now()}_{file}",
+        file_path)
+
+os.system(f"rm -rf {backup_dir}")

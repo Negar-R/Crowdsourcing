@@ -11,12 +11,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import dj_database_url
-from pathlib import Path
-from dotenv import load_dotenv, find_dotenv
-
-env_file = Path(find_dotenv(usecwd=True))
-load_dotenv(verbose=True, dotenv_path=env_file)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -95,11 +89,8 @@ DATABASES = {
     }
 }
 
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
 
 # caching
-
 CACHES = {  
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -107,8 +98,7 @@ CACHES = {
     }
 }
 
-#logging
-
+# logging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -228,7 +218,3 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # pagination
 SHOW_TASK_PER_PAGE = 5
-
-# for deploying on heroku
-import django_heroku
-django_heroku.settings(locals())
