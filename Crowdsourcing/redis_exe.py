@@ -1,16 +1,11 @@
 import os
 import redis
-from pathlib import Path
-from dotenv import load_dotenv, find_dotenv
-
-env_file = Path(find_dotenv(usecwd=True))
-load_dotenv(verbose=True, dotenv_path=env_file)
 
 
 class Redis_Handler:
     def __init__(self):
         self.redis_client = redis.Redis(host=os.environ.get("REDIS_HOST"),
-                                        port=os.environ.get("REDIS_PORT"),
+                                        port=os.environ.get("REDIS_PORT_NUMBER"),
                                         db=os.environ.get("REDIS_DB_NUMBER", 0))
     
     def add(self, set_name, expire_time, value):
